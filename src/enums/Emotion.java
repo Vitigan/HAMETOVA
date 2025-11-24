@@ -1,4 +1,5 @@
 package enums;
-public enum Emotion{
-    HAPPY, SAD
+
+public enum Emotion {
+    HAPPY, SAD, CALM, SCARED, EXCITED // добавляем SCARED и CALM
 }

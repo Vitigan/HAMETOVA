@@ -17,16 +17,17 @@ public class Tool implements Craftable {
         this.material = material;
         this.isCrafted = false;
         this.durability = 0; // Пока не создан - прочность 0
-        this.efficiency = (int)(Math.random() * 51) + 50; // 50-100%
+        this.efficiency = (int) (Math.random() * 51) + 50; // 50-100%
     }
 
     @Override
     public void craft() {
-        if (!isCrafted) {
-            isCrafted = true;
-            durability = 100; // При создании полная прочность
-            System.out.println(name + " из " + material + " создан! Эффективность: " + efficiency + "%");
+        if (isCrafted) {
+            throw new exceptions.InteractionException("Инструмент " + name + " уже создан!");
         }
+        isCrafted = true;
+        durability = 100; // При создании полная прочность
+        System.out.println(name + " из " + material + " создан! Эффективность: " + efficiency + "%");
     }
 
     @Override
@@ -36,14 +37,14 @@ public class Tool implements Craftable {
 
     public boolean use() throws ItemBrokenException {
         if (!isCrafted) {
-            throw new ItemBrokenException("Сначала создай инструмент " + name + "!");
+            throw new exceptions.InteractionException("Сначала создай инструмент " + name + "!");
         }
         if (durability <= 0) {
             throw new ItemBrokenException("Инструмент " + name + " сломан!");
         }
 
         // Уменьшаем прочность на 5-15 единиц
-        int wear = (int)(Math.random() * 11) + 5;
+        int wear = (int) (Math.random() * 11) + 5;
         durability -= wear;
 
         // Проверяем успех на основе эффективности
@@ -92,8 +93,10 @@ public class Tool implements Craftable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Tool)) return false;
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Tool))
+            return false;
         Tool other = (Tool) obj;
         return name.equals(other.name) &&
                 material == other.material;

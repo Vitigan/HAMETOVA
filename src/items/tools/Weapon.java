@@ -1,4 +1,4 @@
-package items;
+package items.tools;
 
 import interfaces.Craftable;
 import exceptions.ItemBrokenException;
@@ -15,15 +15,16 @@ public class Weapon implements Craftable {
         this.type = type;
         this.isCrafted = false;
         this.durability = 100;
-        this.effectiveness = (int)(Math.random() * 51) + 50; // 50-100%
+        this.effectiveness = (int) (Math.random() * 51) + 50; // 50-100%
     }
 
     @Override
     public void craft() {
-        if (!isCrafted) {
-            isCrafted = true;
-            System.out.println(type + " создано! Эффективность: " + effectiveness + "%");
+        if (isCrafted) {
+            throw new exceptions.InteractionException("Оружие " + type + " уже создано!");
         }
+        isCrafted = true;
+        System.out.println(type + " создано! Эффективность: " + effectiveness + "%");
     }
 
     @Override
@@ -83,8 +84,10 @@ public class Weapon implements Craftable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Weapon weapon = (Weapon) o;
         return isCrafted == weapon.isCrafted &&
                 durability == weapon.durability &&

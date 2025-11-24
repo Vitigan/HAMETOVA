@@ -1,10 +1,9 @@
 package entities;
 
 import enums.Emotion;
-import interfaces.Soundable;
 import java.util.Objects;
 
-public abstract class LivingBeing implements Soundable {
+public abstract class LivingBeing {
     protected String name;
     protected int age;
     protected Emotion emotion;
@@ -19,17 +18,35 @@ public abstract class LivingBeing implements Soundable {
 
     public abstract void move();
 
+    public abstract void makeSound();
+
     // Getters and setters
-    public String getName() { return name; }
-    public int getAge() { return age; }
-    public Emotion getEmotion() { return emotion; }
-    public void setEmotion(Emotion emotion) { this.emotion = emotion; }
-    public boolean isAlive() { return isAlive; }
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Emotion getEmotion() {
+        return emotion;
+    }
+
+    public void setEmotion(Emotion emotion) {
+        this.emotion = emotion;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LivingBeing that)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof LivingBeing that))
+            return false;
         return age == that.age &&
                 Objects.equals(name, that.name);
     }
