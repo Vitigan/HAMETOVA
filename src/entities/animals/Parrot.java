@@ -3,9 +3,9 @@ package entities.animals;
 import entities.LivingBeing;
 import entities.human.Robinson;
 import enums.Emotion;
-import interfaces.Soundable;
-import interfaces.LivingInteractable;
-import interfaces.Talkable;
+import entities.Soundable;
+import entities.LivingInteractable;
+import entities.Talkable;
 
 public class Parrot extends LivingBeing implements Soundable, LivingInteractable, Talkable {
     private boolean isTame;

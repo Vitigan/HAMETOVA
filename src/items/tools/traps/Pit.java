@@ -1,72 +1,74 @@
 package items.tools.traps;
 
+import items.Item;
 import entities.LivingBeing;
 import entities.animals.Goat;
 import entities.human.Robinson;
 import enums.Emotion;
-import interfaces.Craftable;
-import interfaces.ItemInteractable;
+import items.ItemInteractable;
 import java.util.Objects;
 
-public class Pit implements Craftable, ItemInteractable {
-    private boolean isCrafted;
+public class Pit extends Item implements ItemInteractable {
     private boolean isSet;
     private boolean isCovered;
     private LivingBeing capturedAnimal;
     private double catchChance;
 
     public Pit() {
-        this.isCrafted = false;
+        super("Волчья яма");
         this.isSet = false;
         this.isCovered = false;
         this.capturedAnimal = null;
         this.catchChance = 0.7;
     }
 
-    @Override
-    public void craft() {
-        if (isCrafted) {
-            throw new exceptions.InteractionException("Волчья яма уже выкопана!");
-        }
-        isCrafted = true;
-        System.out.println("Выкопана волчья яма!");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isCrafted;
-    }
-
     public void setTrap() {
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Сначала нужно выкопать яму!");
-        }
         isSet = true;
         isCovered = true;
         System.out.println("Волчья яма замаскирована и готова к работе!");
     }
 
-    // ItemInteractable implementation
     @Override
     public void interactWithItem(LivingBeing interactor) {
-        // Животное проходит мимо ямы
-        if (isSet && isCovered && capturedAnimal == null) {
-            System.out.println(interactor.getName() + " приближается к замаскированной яме...");
-
-            if (Math.random() < catchChance) {
-                capturedAnimal = interactor;
-                isCovered = false;
-                System.out.println(interactor.getName() + " провалился в волчью яму!");
-                interactor.setEmotion(Emotion.SCARED);
-
-                if (interactor instanceof Goat) {
-                    ((Goat) interactor).getTrapped();
+        if (interactor instanceof Robinson) {
+            // Проверка ямы
+            if (capturedAnimal != null) {
+                // Проверяем, не сбежало ли животное
+                if (capturedAnimal instanceof Goat && !((Goat) capturedAnimal).isTrapped()) {
+                    System.out.println("Яма сработала, но животное выбралось! Яма пуста.");
+                    capturedAnimal = null;
+                    isCovered = false;
+                } else {
+                    System.out.println("В яме поймана: " + capturedAnimal.getName());
+                    interactor.setEmotion(Emotion.HAPPY);
                 }
             } else {
-                System.out.println(interactor.getName() + " обошел яму!");
+                System.out.println("Яма пуста");
             }
-        } else if (capturedAnimal != null) {
-            System.out.println("В яме уже находится " + capturedAnimal.getName());
+
+            if (!isSet) {
+                System.out.println("Яма не установлена - нужно замаскировать");
+            }
+        } else {
+            // Срабатывание ловушки
+            if (isSet && isCovered && capturedAnimal == null) {
+                System.out.println(interactor.getName() + " приближается к замаскированной яме...");
+
+                if (Math.random() < catchChance) {
+                    capturedAnimal = interactor;
+                    isCovered = false;
+                    System.out.println(interactor.getName() + " провалился в волчью яму!");
+                    interactor.setEmotion(Emotion.SCARED);
+
+                    if (interactor instanceof Goat) {
+                        ((Goat) interactor).getTrapped();
+                    }
+                } else {
+                    System.out.println(interactor.getName() + " обошел яму!");
+                }
+            } else if (capturedAnimal != null) {
+                System.out.println("В яме уже находится " + capturedAnimal.getName());
+            }
         }
     }
 
@@ -79,7 +81,7 @@ public class Pit implements Craftable, ItemInteractable {
 
     @Override
     public boolean canInteract() {
-        return isCrafted;
+        return true;
     }
 
     public LivingBeing collectAnimal() {
@@ -96,12 +98,10 @@ public class Pit implements Craftable, ItemInteractable {
     }
 
     public void resetTrap() {
-        if (isCrafted) {
-            capturedAnimal = null;
-            isCovered = true;
-            isSet = true;
-            System.out.println("Яма перезаряжена и готова к работе!");
-        }
+        capturedAnimal = null;
+        isCovered = true;
+        isSet = true;
+        System.out.println("Яма перезаряжена и готова к работе!");
     }
 
     // Геттеры
@@ -132,21 +132,20 @@ public class Pit implements Craftable, ItemInteractable {
         if (!(o instanceof Pit))
             return false;
         Pit pit = (Pit) o;
-        return isCrafted == pit.isCrafted &&
-                isSet == pit.isSet &&
+        return isSet == pit.isSet &&
                 isCovered == pit.isCovered &&
                 Objects.equals(capturedAnimal, pit.capturedAnimal);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isCrafted, isSet, isCovered, capturedAnimal);
+        return Objects.hash(isSet, isCovered, capturedAnimal);
     }
 
     @Override
     public String toString() {
-        return String.format("Pit{crafted=%s, set=%s, covered=%s, captured=%s}",
-                isCrafted, isSet, isCovered,
+        return String.format("Pit{set=%s, covered=%s, captured=%s}",
+                isSet, isCovered,
                 capturedAnimal != null ? capturedAnimal.getName() : "none");
     }
 }

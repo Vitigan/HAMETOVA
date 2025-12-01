@@ -1,14 +1,14 @@
 package items.containers;
 
+import items.Item;
 import entities.LivingBeing;
-import interfaces.Craftable;
-import interfaces.ItemInteractable;
+import items.ItemInteractable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import exceptions.InteractionException;
 
-public class Backpack implements Craftable, ItemInteractable {
-    private boolean isCrafted;
+public class Backpack extends Item implements ItemInteractable {
     private int capacity;
     private List<String> contents;
     private String material;
@@ -16,7 +16,7 @@ public class Backpack implements Craftable, ItemInteractable {
     private boolean isWorn;
 
     public Backpack() {
-        this.isCrafted = false;
+        super("Рюкзак");
         this.capacity = 15; // Меньше чем у корзины, но удобнее для переноски
         this.contents = new ArrayList<>();
         this.material = "кожа";
@@ -30,24 +30,7 @@ public class Backpack implements Craftable, ItemInteractable {
         this.material = material;
     }
 
-    @Override
-    public void craft() {
-        if (isCrafted) {
-            throw new exceptions.InteractionException("Рюкзак уже создан!");
-        }
-        isCrafted = true;
-        System.out.println("Создан " + material + " рюкзак!");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isCrafted;
-    }
-
     public boolean store(String item) {
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Сначала создай рюкзак!");
-        }
         if (contents.size() >= capacity) {
             System.out.println("Рюкзак полон! Нельзя положить: " + item);
             return false;
@@ -64,9 +47,6 @@ public class Backpack implements Craftable, ItemInteractable {
     }
 
     public String take() {
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Сначала создай рюкзак!");
-        }
         if (contents.isEmpty()) {
             System.out.println("В рюкзаке ничего нет!");
             return null;
@@ -78,9 +58,6 @@ public class Backpack implements Craftable, ItemInteractable {
     }
 
     public void wear() {
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Не могу надеть - рюкзак не создан!");
-        }
         isWorn = true;
         System.out.println("Надеваю рюкзак на спину. Внутри: " + contents);
     }
@@ -96,12 +73,8 @@ public class Backpack implements Craftable, ItemInteractable {
     public void interactWithItem(LivingBeing interactor) {
         System.out.println(interactor.getName() + " взаимодействует с рюкзаком");
 
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Рюкзак еще не создан!");
-        }
-
         if (contents.isEmpty()) {
-            throw new exceptions.InteractionException("Рюкзак пуст - нечего брать!");
+            throw new InteractionException("Рюкзак пуст - нечего брать!");
         }
 
         System.out.println("В рюкзаке: " + contents);
@@ -120,11 +93,11 @@ public class Backpack implements Craftable, ItemInteractable {
 
     @Override
     public boolean canInteract() {
-        return isCrafted;
+        return true;
     }
 
     public void repair() {
-        if (isCrafted && durability < 100) {
+        if (durability < 100) {
             durability = 100;
             System.out.println("Рюкзак отремонтирован! Прочность восстановлена.");
         }
@@ -135,10 +108,6 @@ public class Backpack implements Craftable, ItemInteractable {
     }
 
     // Геттеры
-    public boolean isCrafted() {
-        return isCrafted;
-    }
-
     public int getCapacity() {
         return capacity;
     }
@@ -177,7 +146,7 @@ public class Backpack implements Craftable, ItemInteractable {
 
     @Override
     public String toString() {
-        return String.format("Backpack{material='%s', capacity=%d, crafted=%s, worn=%s, contents=%s}",
-                material, capacity, isCrafted, isWorn, contents.size());
+        return String.format("Backpack{material='%s', capacity=%d, worn=%s, contents=%s}",
+                material, capacity, isWorn, contents.size());
     }
 }

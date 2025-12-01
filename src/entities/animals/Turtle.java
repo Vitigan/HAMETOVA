@@ -3,8 +3,8 @@ package entities.animals;
 import entities.LivingBeing;
 import entities.human.Robinson;
 import enums.Emotion;
-import interfaces.Soundable;
-import interfaces.LivingInteractable;
+import entities.Soundable;
+import entities.LivingInteractable;
 import java.util.Objects;
 
 public class Turtle extends LivingBeing implements Soundable, LivingInteractable {
@@ -94,8 +94,7 @@ public class Turtle extends LivingBeing implements Soundable, LivingInteractable
 
     public int collectEggs() {
         if (!isCaught) {
-            System.out.println("Сначала нужно поймать черепаху!");
-            return 0;
+            throw new IllegalStateException("Сначала нужно поймать черепаху!");
         }
 
         int collectedEggs = eggCount;

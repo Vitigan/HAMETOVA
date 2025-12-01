@@ -1,40 +1,20 @@
 package items.transport;
 
-import interfaces.Craftable;
+import items.Item;
 import exceptions.ItemBrokenException;
 
-public class Boat implements Craftable {
+public class Boat extends Item {
 
-    private boolean isBuilt;
     private boolean isOnWater;
     private int durability;
-    private String name;
 
     public Boat(String name) {
-        this.name = name;
-        this.isBuilt = false;
+        super(name);
         this.isOnWater = false;
         this.durability = 100;
     }
 
-    @Override
-    public void craft() {
-        if (isBuilt) {
-            throw new exceptions.InteractionException("Лодка уже построена!");
-        }
-        isBuilt = true;
-        System.out.println(name + " построена!");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isBuilt;
-    }
-
     public void sail() throws ItemBrokenException {
-        if (!isBuilt) {
-            throw new ItemBrokenException("Сначала построй лодку!");
-        }
         if (durability <= 0) {
             throw new ItemBrokenException("Лодка сломана!");
         }
@@ -58,17 +38,13 @@ public class Boat implements Craftable {
     }
 
     public void repair() {
-        if (isBuilt && durability < 100) {
+        if (durability < 100) {
             durability = 100;
             System.out.println(name + " отремонтирована!");
         }
     }
 
-    // геттеры получить информацию о лодке
-    public boolean isBuilt() {
-        return isBuilt;
-    }
-
+    // Геттеры
     public boolean isOnWater() {
         return isOnWater;
     }
@@ -77,30 +53,25 @@ public class Boat implements Craftable {
         return durability;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof Boat boat))
             return false;
-        return isBuilt == boat.isBuilt &&
-                isOnWater == boat.isOnWater &&
+        return isOnWater == boat.isOnWater &&
                 durability == boat.durability &&
                 name.equals(boat.name);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(name, isBuilt, isOnWater, durability);
+        return java.util.Objects.hash(name, isOnWater, durability);
     }
 
     @Override
     public String toString() {
-        return "Лодка '" + name + "' (построена: " + isBuilt + ", на воде: " + isOnWater + ", прочность: " + durability
+        return "Лодка '" + name + "' (на воде: " + isOnWater + ", прочность: " + durability
                 + "%)";
     }
 

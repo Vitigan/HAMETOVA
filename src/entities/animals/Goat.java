@@ -3,10 +3,10 @@ package entities.animals;
 import entities.LivingBeing;
 import entities.human.Robinson;
 import enums.GoatAge;
-import interfaces.Soundable;
-import interfaces.LivingInteractable;
+import entities.Soundable;
+import entities.LivingInteractable;
 import enums.Emotion;
-import interfaces.HuntTarget;
+import entities.HuntTarget;
 
 public class Goat extends LivingBeing implements Soundable, LivingInteractable, HuntTarget {
     private final GoatAge ageType;

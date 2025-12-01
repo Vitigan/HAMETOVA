@@ -1,17 +1,17 @@
 package items.containers;
 
+import items.Item;
 import entities.LivingBeing;
 import entities.human.Robinson;
-import interfaces.Craftable;
-import interfaces.ItemInteractable;
-import interfaces.HoldsItems;
+import items.ItemInteractable;
+import items.inventory.HoldsItems;
 import items.inventory.InventoryItem;
 import items.inventory.InventoryStorage;
 import java.util.ArrayList;
 import java.util.List;
+import exceptions.InteractionException;
 
-public class Basket implements Craftable, ItemInteractable, HoldsItems {
-    private boolean isCrafted;
+public class Basket extends Item implements ItemInteractable, HoldsItems {
     private final InventoryStorage storage;
     private String style;
 
@@ -20,7 +20,7 @@ public class Basket implements Craftable, ItemInteractable, HoldsItems {
     }
 
     public Basket(String style, double maxWeight) {
-        this.isCrafted = false;
+        super("Корзина");
         this.storage = new InventoryStorage(maxWeight);
         this.style = style;
     }
@@ -28,20 +28,6 @@ public class Basket implements Craftable, ItemInteractable, HoldsItems {
     // Constructor for Main.java compatibility
     public Basket(int maxWeight, String style) {
         this(style, (double) maxWeight);
-    }
-
-    @Override
-    public void craft() {
-        if (isCrafted) {
-            throw new exceptions.InteractionException("Корзина уже сплетена!");
-        }
-        isCrafted = true;
-        System.out.println("Сплетена " + style + " корзина!");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isCrafted;
     }
 
     @Override
@@ -53,17 +39,13 @@ public class Basket implements Craftable, ItemInteractable, HoldsItems {
     public void interactWithItem(LivingBeing interactor) {
         System.out.println(interactor.getName() + " взаимодействует с " + style + " корзиной");
 
-        if (!isCrafted) {
-            throw new exceptions.InteractionException("Корзина еще не сплетена!");
-        }
-
         // Просто показываем содержимое через InventoryStorage
         storage.printContents();
 
         if (interactor instanceof Robinson) {
             Robinson robinson = (Robinson) interactor;
             if (storage.isEmpty()) {
-                throw new exceptions.InteractionException("Корзина пуста - нечего забирать!");
+                throw new InteractionException("Корзина пуста - нечего забирать!");
             }
             robinson.talk("Заберу предметы в свой инвентарь!");
             transferAllTo(robinson.getStorage());
@@ -90,7 +72,7 @@ public class Basket implements Craftable, ItemInteractable, HoldsItems {
 
     @Override
     public boolean canInteract() {
-        return isCrafted;
+        return true;
     }
 
     // Wrapper methods for Main.java compatibility

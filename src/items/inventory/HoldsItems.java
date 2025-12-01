@@ -1,7 +1,4 @@
-package interfaces;
-
-import items.inventory.InventoryStorage;
-import items.inventory.InventoryItem;
+package items.inventory;
 
 public interface HoldsItems {
     InventoryStorage getStorage();

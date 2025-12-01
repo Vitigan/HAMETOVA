@@ -48,13 +48,13 @@ public class Main {
 
         // СЦЕНА 2: Размышления о лодке
         System.out.println("СЦЕНА 2: Размышления об опасностях");
-        Boat rescueBoat = new Boat("Спасательная шлюпка");
-        rescueBoat.craft();
+        // Используем Фабрику для создания лодки
+        Boat rescueBoat = CraftingFactory.createBoat("Спасательная шлюпка");
 
         try {
             rescueBoat.sail();
             System.out.println("Робинзон пытается плыть...");
-            rescueBoat.dock(); // Логическое завершение плавания
+            rescueBoat.dock();
         } catch (ItemBrokenException e) {
             System.out.println("Робинзон размышляет: " + e.getMessage());
             System.out.println("От одной мысли об опасностях у меня замирает сердце и стынет кровь в жилах...");
@@ -66,43 +66,29 @@ public class Main {
 
         // СЦЕНА 3: Ремесла
         System.out.println("СЦЕНА 3: Ремесленная деятельность");
-        Pipe clayPipe = new Pipe(Material.CLAY);
-        clayPipe.craft();
-        clayPipe.smoke();
-        robinson.setEmotion(Emotion.HAPPY);
-        System.out.println("Робинзон радуется своей сметке!");
+        // Используем Фабрику для создания трубки
+        Pipe clayPipe = CraftingFactory.createPipe(Material.CLAY);
+        try {
+            clayPipe.smoke();
+            robinson.setEmotion(Emotion.HAPPY);
+            System.out.println("Робинзон радуется своей сметке!");
+        } catch (InteractionException e) {
+            System.out.println("Неудача с трубкой: " + e.getMessage());
+            robinson.setEmotion(Emotion.SAD);
+        }
 
-        Basket storageBasket = new Basket(15, "большая глубокая");
-        storageBasket.craft();
+        // Используем Фабрику для создания корзины
+        Basket storageBasket = CraftingFactory.createBasket(15, "большая глубокая");
 
         System.out.println("\nРобинзон наполняет корзину:");
         storageBasket.put(new InventoryItem("Глина", 4, 1.0));
         storageBasket.carry();
         System.out.println();
 
-        // СЦЕНА 4: Создание инструментов
-        System.out.println("СЦЕНА 4: Создание инструментов");
-        Tool woodHammer = new Tool("Молоток", Material.WOOD);
-        Tool metalAxe = new Tool("Топор", Material.METAL);
-
-        woodHammer.craft();
-        metalAxe.craft();
-
-        try {
-            woodHammer.use();
-            metalAxe.use();
-
-            woodHammer.repair();
-            metalAxe.repair();
-        } catch (ItemBrokenException e) {
-            System.out.println("Ошибка с инструментом: " + e.getMessage());
-        }
-        System.out.println();
-
-        // СЦЕНА 5: Охота
-        System.out.println("СЦЕНА 5: Проблемы с охотой");
-        Weapon gun = new Weapon(WeaponType.GUN);
-        gun.craft();
+        // СЦЕНА 4: Охота
+        System.out.println("СЦЕНА 4: Проблемы с охотой");
+        // Используем Фабрику для создания оружия
+        Weapon gun = CraftingFactory.createWeapon(WeaponType.GUN);
 
         int successfulHunts = 0;
         for (int i = 0; i < 6; i++) {
@@ -121,23 +107,20 @@ public class Main {
         gun.repair();
         System.out.println();
 
-        // СЦЕНА 6: Ловушки
-        System.out.println("СЦЕНА 6: Альтернативные методы охоты");
+        // СЦЕНА 5: Ловушки
+        System.out.println("СЦЕНА 5: Альтернативные методы охоты");
         robinson.setEmotion(Emotion.SAD);
 
-        // Используем новые классы ловушек
-        Snare snare = new Snare("бечевка");
-        Pit pit = new Pit();
-
-        snare.craft();
-        pit.craft();
+        // Установка ловушек через Фабрику
+        Snare snare = CraftingFactory.createSnare("бечевка");
+        Pit pit = CraftingFactory.createPit();
 
         snare.setTrap();
         pit.setTrap();
 
         System.out.println("\n--- Проверка ловушек ---");
 
-        // Симуляция попадания животных
+        // Животные попадают в ловушки
         snare.interactWithItem(kid1); // Козленок попадает в силки
         pit.interactWithItem(oldGoat); // Старый козел падает в яму
 
@@ -151,15 +134,15 @@ public class Main {
         kid1.escape();
         oldGoat.escape();
 
-        // Повторная проверка (должна показать, что животные сбежали или остались)
+        // Проверка ловушек после попытки побега
         System.out.println("\nРобинзон снова проверяет ловушки:");
         snare.interactWithItem(robinson);
         pit.interactWithItem(robinson);
 
         System.out.println();
 
-        // СЦЕНА 7: Итоги
-        System.out.println("СЦЕНА 7: Итоги года уединения");
+        // СЦЕНА 6: Итоги
+        System.out.println("СЦЕНА 6: Итоги года уединения");
 
         int remainingCaptured = 0;
         if (kid1.isTrapped())

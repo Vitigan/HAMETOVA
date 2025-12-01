@@ -2,9 +2,11 @@ package entities.human;
 
 import entities.LivingBeing;
 import enums.Emotion;
-import interfaces.LivingInteractable;
-import interfaces.Talkable;
-import interfaces.HoldsItems;
+import entities.LivingInteractable;
+import entities.Talkable;
+import items.Item;
+import exceptions.InteractionException;
+import items.inventory.HoldsItems;
 import items.inventory.InventoryStorage;
 
 public class Robinson extends LivingBeing implements LivingInteractable, Talkable, HoldsItems {

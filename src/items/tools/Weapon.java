@@ -1,41 +1,23 @@
 package items.tools;
 
-import interfaces.Craftable;
+import items.Item;
 import exceptions.ItemBrokenException;
 import enums.WeaponType;
 import java.util.Objects;
 
-public class Weapon implements Craftable {
+public class Weapon extends Item {
     private WeaponType type;
-    private boolean isCrafted;
     private int durability;
     private int effectiveness;
 
     public Weapon(WeaponType type) {
+        super(type.toString());
         this.type = type;
-        this.isCrafted = false;
         this.durability = 100;
         this.effectiveness = (int) (Math.random() * 51) + 50; // 50-100%
     }
 
-    @Override
-    public void craft() {
-        if (isCrafted) {
-            throw new exceptions.InteractionException("Оружие " + type + " уже создано!");
-        }
-        isCrafted = true;
-        System.out.println(type + " создано! Эффективность: " + effectiveness + "%");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isCrafted;
-    }
-
     public boolean use() throws ItemBrokenException {
-        if (!isCrafted) {
-            throw new ItemBrokenException("Оружие еще не создано!");
-        }
         if (durability <= 0) {
             throw new ItemBrokenException("Оружие сломано!");
         }
@@ -53,7 +35,7 @@ public class Weapon implements Craftable {
     }
 
     public void repair() {
-        if (isCrafted && durability < 100) {
+        if (durability < 100) {
             durability = 100;
             System.out.println(type + " отремонтировано!");
         }
@@ -62,10 +44,6 @@ public class Weapon implements Craftable {
     // Геттеры
     public WeaponType getType() {
         return type;
-    }
-
-    public boolean isCrafted() {
-        return isCrafted;
     }
 
     public int getDurability() {
@@ -78,8 +56,8 @@ public class Weapon implements Craftable {
 
     @Override
     public String toString() {
-        return String.format("Оружие %s (создано: %s, прочность: %d%%, эффективность: %d%%)",
-                type, isCrafted ? "да" : "нет", durability, effectiveness);
+        return String.format("Оружие %s (прочность: %d%%, эффективность: %d%%)",
+                type, durability, effectiveness);
     }
 
     @Override
@@ -89,14 +67,13 @@ public class Weapon implements Craftable {
         if (o == null || getClass() != o.getClass())
             return false;
         Weapon weapon = (Weapon) o;
-        return isCrafted == weapon.isCrafted &&
-                durability == weapon.durability &&
+        return durability == weapon.durability &&
                 effectiveness == weapon.effectiveness &&
                 type == weapon.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, isCrafted, durability, effectiveness);
+        return Objects.hash(type, durability, effectiveness);
     }
 }
