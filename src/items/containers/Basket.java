@@ -20,8 +20,8 @@ public class Basket extends Item implements ItemInteractable, HoldsItems {
     }
 
     public Basket(String style, double maxWeight) {
-        super("Корзина");
-        this.storage = new InventoryStorage(maxWeight);
+        super("Корзина", 1.0, enums.Size.MEDIUM); // Корзина средняя
+        this.storage = new InventoryStorage(maxWeight, enums.Size.SMALL); // В корзину влезают только мелкие предметы
         this.style = style;
     }
 

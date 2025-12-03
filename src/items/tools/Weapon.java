@@ -9,12 +9,16 @@ public class Weapon extends Item {
     private WeaponType type;
     private int durability;
     private int effectiveness;
+    private static final int DEFAULT_DURABILITY = 100;
+    private static final int USAGE_COST = 15;
+    private static final int MIN_EFFECTIVENESS = 50;
+    private static final int MAX_EFFECTIVENESS_VARIANCE = 51;
 
     public Weapon(WeaponType type) {
-        super(type.toString());
+        super(type.toString(), 3.0, enums.Size.MEDIUM); // Оружие среднего размера
         this.type = type;
-        this.durability = 100;
-        this.effectiveness = (int) (Math.random() * 51) + 50; // 50-100%
+        this.durability = DEFAULT_DURABILITY;
+        this.effectiveness = (int) (Math.random() * MAX_EFFECTIVENESS_VARIANCE) + MIN_EFFECTIVENESS; // 50-100%
     }
 
     public boolean use() throws ItemBrokenException {
@@ -22,7 +26,7 @@ public class Weapon extends Item {
             throw new ItemBrokenException("Оружие сломано!");
         }
 
-        durability -= 15; // Оружие изнашивается при использовании
+        durability -= USAGE_COST; // Оружие изнашивается при использовании
         boolean success = Math.random() * 100 < effectiveness; // Шанс успеха
 
         System.out.println("Использовано " + type + ". Прочность: " + durability + "%");
@@ -35,8 +39,8 @@ public class Weapon extends Item {
     }
 
     public void repair() {
-        if (durability < 100) {
-            durability = 100;
+        if (durability < DEFAULT_DURABILITY) {
+            durability = DEFAULT_DURABILITY;
             System.out.println(type + " отремонтировано!");
         }
     }

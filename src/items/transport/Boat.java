@@ -9,7 +9,7 @@ public class Boat extends Item {
     private int durability;
 
     public Boat(String name) {
-        super(name);
+        super(name, 50.0, enums.Size.LARGE); // Лодка крупная
         this.isOnWater = false;
         this.durability = 100;
     }

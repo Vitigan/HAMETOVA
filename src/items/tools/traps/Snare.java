@@ -16,7 +16,7 @@ public class Snare extends Item implements ItemInteractable {
     private int durability;
 
     public Snare(String material) {
-        super("Силки");
+        super("Силки", 0.5, enums.Size.SMALL); // Силки мелкие
         this.isSet = false;
         this.capturedAnimal = null;
         this.material = material;

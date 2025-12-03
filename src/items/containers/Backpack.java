@@ -3,63 +3,77 @@ package items.containers;
 import items.Item;
 import entities.LivingBeing;
 import items.ItemInteractable;
+import items.inventory.HoldsItems;
+import items.inventory.InventoryItem;
+import items.inventory.InventoryStorage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import exceptions.InteractionException;
+import entities.human.Robinson;
 
-public class Backpack extends Item implements ItemInteractable {
-    private int capacity;
-    private List<String> contents;
+public class Backpack extends Item implements ItemInteractable, HoldsItems {
+    private final InventoryStorage storage;
     private String material;
     private int durability;
     private boolean isWorn;
 
+    private static final int DEFAULT_CAPACITY = 15;
+    private static final String DEFAULT_MATERIAL = "кожа";
+    private static final int DEFAULT_DURABILITY = 100;
+    private static final double WEAR_CHANCE = 0.1;
+    private static final int WEAR_AMOUNT = 5;
+
     public Backpack() {
-        super("Рюкзак");
-        this.capacity = 15; // Меньше чем у корзины, но удобнее для переноски
-        this.contents = new ArrayList<>();
-        this.material = "кожа";
-        this.durability = 100;
-        this.isWorn = false;
+        this(DEFAULT_CAPACITY, DEFAULT_MATERIAL);
     }
 
     public Backpack(int capacity, String material) {
-        this();
-        this.capacity = capacity;
+        super("Рюкзак", 1.5, enums.Size.MEDIUM); // Рюкзак средний
+        this.storage = new InventoryStorage((double) capacity, enums.Size.MEDIUM); // В рюкзак влезают средние предметы
         this.material = material;
+        this.durability = DEFAULT_DURABILITY;
+        this.isWorn = false;
+    }
+
+    @Override
+    public InventoryStorage getStorage() {
+        return storage;
     }
 
     public boolean store(String item) {
-        if (contents.size() >= capacity) {
+        // Для совместимости с Main.java, где передается строка
+        // Предполагаем вес 1.0 и количество 1
+        boolean added = storage.addItem(new InventoryItem(item, 1, 1.0));
+        if (added) {
+            System.out.println("В рюкзак положен: " + item);
+            // Рюкзак изнашивается при использовании
+            if (Math.random() < WEAR_CHANCE) {
+                durability -= WEAR_AMOUNT;
+                System.out.println("Рюкзак немного износился. Прочность: " + durability + "%");
+            }
+        } else {
             System.out.println("Рюкзак полон! Нельзя положить: " + item);
-            return false;
         }
-        contents.add(item);
-        System.out.println("В рюкзак положен: " + item);
-
-        // Рюкзак изнашивается при использовании
-        if (Math.random() < 0.1) {
-            durability -= 5;
-            System.out.println("Рюкзак немного износился. Прочность: " + durability + "%");
-        }
-        return true;
+        return added;
     }
 
     public String take() {
-        if (contents.isEmpty()) {
+        if (storage.isEmpty()) {
             System.out.println("В рюкзаке ничего нет!");
             return null;
         }
 
-        String item = contents.remove(contents.size() - 1);
-        System.out.println("Из рюкзака взят: " + item);
-        return item;
+        // Берем первый попавшийся предмет
+        InventoryItem item = storage.getItems().get(0);
+        storage.takeItem(item.name(), item.quantity());
+        System.out.println("Из рюкзака взят: " + item.name());
+        return item.name();
     }
 
     public void wear() {
         isWorn = true;
-        System.out.println("Надеваю рюкзак на спину. Внутри: " + contents);
+        System.out.println("Надеваю рюкзак на спину. Внутри: " + getContentsString());
     }
 
     public void takeOff() {
@@ -73,21 +87,25 @@ public class Backpack extends Item implements ItemInteractable {
     public void interactWithItem(LivingBeing interactor) {
         System.out.println(interactor.getName() + " взаимодействует с рюкзаком");
 
-        if (contents.isEmpty()) {
+        if (storage.isEmpty()) {
             throw new InteractionException("Рюкзак пуст - нечего брать!");
         }
 
-        System.out.println("В рюкзаке: " + contents);
+        System.out.println("В рюкзаке: " + getContentsString());
 
         if (isWorn) {
             System.out.println("Рюкзак надет на спину");
+        }
+
+        if (interactor instanceof Robinson) {
+            // Можно добавить логику перекладывания вещей, как в Корзине, если нужно
         }
     }
 
     @Override
     public String getDescription() {
         String status = isWorn ? "надет" : "снят";
-        return material + " рюкзак (" + contents.size() + "/" + capacity +
+        return material + " рюкзак (" + storage.getCurrentWeight() + "/" + storage.getMaxWeight() +
                 ", прочность: " + durability + "%, " + status + ")";
     }
 
@@ -97,8 +115,8 @@ public class Backpack extends Item implements ItemInteractable {
     }
 
     public void repair() {
-        if (durability < 100) {
-            durability = 100;
+        if (durability < DEFAULT_DURABILITY) {
+            durability = DEFAULT_DURABILITY;
             System.out.println("Рюкзак отремонтирован! Прочность восстановлена.");
         }
     }
@@ -109,11 +127,20 @@ public class Backpack extends Item implements ItemInteractable {
 
     // Геттеры
     public int getCapacity() {
-        return capacity;
+        return (int) storage.getMaxWeight();
     }
 
+    // Вспомогательный метод для получения списка названий (для совместимости)
     public List<String> getContents() {
-        return new ArrayList<>(contents);
+        List<String> names = new ArrayList<>();
+        for (InventoryItem item : storage.getItems()) {
+            names.add(item.name());
+        }
+        return names;
+    }
+
+    private String getContentsString() {
+        return storage.getItems().toString();
     }
 
     public String getMaterial() {
@@ -135,18 +162,18 @@ public class Backpack extends Item implements ItemInteractable {
         if (!(o instanceof Backpack))
             return false;
         Backpack backpack = (Backpack) o;
-        return capacity == backpack.capacity &&
+        return getCapacity() == backpack.getCapacity() &&
                 Objects.equals(material, backpack.material);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(capacity, material);
+        return Objects.hash(getCapacity(), material);
     }
 
     @Override
     public String toString() {
         return String.format("Backpack{material='%s', capacity=%d, worn=%s, contents=%s}",
-                material, capacity, isWorn, contents.size());
+                material, getCapacity(), isWorn, storage.getItems().size());
     }
 }

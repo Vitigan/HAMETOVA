@@ -15,7 +15,7 @@ public class Pit extends Item implements ItemInteractable {
     private double catchChance;
 
     public Pit() {
-        super("Волчья яма");
+        super("Волчья яма", 0.0, enums.Size.LARGE); // Яма крупная
         this.isSet = false;
         this.isCovered = false;
         this.capturedAnimal = null;
@@ -53,6 +53,12 @@ public class Pit extends Item implements ItemInteractable {
             // Срабатывание ловушки
             if (isSet && isCovered && capturedAnimal == null) {
                 System.out.println(interactor.getName() + " приближается к замаскированной яме...");
+
+                if (interactor.getSize().ordinal() > this.size.ordinal()) {
+                    System.out.println(interactor.getName() + " слишком большой (" + interactor.getSize()
+                            + "), чтобы упасть в эту яму (" + this.size + ")!");
+                    return;
+                }
 
                 if (Math.random() < catchChance) {
                     capturedAnimal = interactor;

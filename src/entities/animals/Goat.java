@@ -12,12 +12,14 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
     private final GoatAge ageType;
     private boolean isTrapped;
     private boolean isTamed; // приручен
+    private boolean isDead;
 
     public Goat(String name, int age, GoatAge ageType) {
-        super(name, age);
+        super(name, age, ageType == GoatAge.YOUNG ? enums.Size.SMALL : enums.Size.MEDIUM);
         this.ageType = ageType;
         this.isTrapped = false;
         this.isTamed = false;
+        this.isDead = false;
         this.setEmotion(Emotion.CALM);
     }
 
@@ -89,6 +91,11 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
 
     @Override
     public boolean beHunted() {
+        if (isDead) {
+            System.out.println(name + " уже мертва!");
+            return false;
+        }
+
         if (isTrapped) {
             throw new IllegalStateException(name + " уже поймана! Нельзя охотиться на пойманное животное.");
         }
@@ -108,9 +115,8 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
         }
 
         if (Math.random() < catchChance) {
-            isTrapped = true;
-            System.out.println("Успешно поймали " + name + "!");
-            this.setEmotion(Emotion.SCARED);
+            isDead = true;
+            System.out.println("Успешно поймали (и убили) " + name + "!");
             return true;
         } else {
             System.out.println(name + " убежала!");

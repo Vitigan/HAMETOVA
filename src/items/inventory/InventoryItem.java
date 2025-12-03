@@ -1,12 +1,20 @@
 package items.inventory;
 
-public record InventoryItem(String name, int quantity, double weightPerUnit) {
+import items.Item;
+import enums.Size;
+
+public record InventoryItem(String name, int quantity, double weightPerUnit, Size size, Item itemReference) {
+
+    public InventoryItem(String name, int quantity, double weightPerUnit) {
+        this(name, quantity, weightPerUnit, Size.SMALL, null); // По умолчанию мелкий
+    }
+
     public double getTotalWeight() {
         return quantity * weightPerUnit;
     }
 
     public InventoryItem withQuantity(int newQuantity) {
-        return new InventoryItem(name, newQuantity, weightPerUnit);
+        return new InventoryItem(name, newQuantity, weightPerUnit, size, itemReference);
     }
 
     @Override

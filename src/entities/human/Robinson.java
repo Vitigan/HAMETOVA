@@ -8,15 +8,21 @@ import items.Item;
 import exceptions.InteractionException;
 import items.inventory.HoldsItems;
 import items.inventory.InventoryStorage;
+import entities.HuntTarget;
+import items.tools.Weapon;
+import exceptions.ItemBrokenException;
 
 public class Robinson extends LivingBeing implements LivingInteractable, Talkable, HoldsItems {
     private final InventoryStorage inventory;
     private int powderAmount;
 
+    private static final double DEFAULT_INVENTORY_SIZE = 30.0;
+    private static final int INITIAL_POWDER = 20;
+
     public Robinson(String name, int age) {
-        super(name, age);
-        this.inventory = new InventoryStorage(30.0);
-        this.powderAmount = 20;
+        super(name, age, enums.Size.MEDIUM); // Робинзон среднего размера
+        this.inventory = new InventoryStorage(DEFAULT_INVENTORY_SIZE);
+        this.powderAmount = INITIAL_POWDER;
         this.setEmotion(Emotion.CALM);
     }
 
@@ -91,6 +97,29 @@ public class Robinson extends LivingBeing implements LivingInteractable, Talkabl
         }
         powderAmount--;
         System.out.println("Использован порох. Осталось: " + powderAmount);
+    }
+
+    public void hunt(HuntTarget target, Weapon weapon) {
+        String targetName = (target instanceof LivingBeing) ? ((LivingBeing) target).getName() : "цель";
+        System.out.println(name + " охотится на " + targetName + " с помощью " + weapon.getName());
+
+        try {
+            if (weapon.use()) {
+                if (target.beHunted()) {
+                    System.out.println("Охота удалась! " + targetName + " добыта.");
+                    setEmotion(Emotion.HAPPY);
+                } else {
+                    System.out.println(targetName + " убежала!");
+                    setEmotion(Emotion.SAD);
+                }
+            } else {
+                System.out.println("Промах!");
+                setEmotion(Emotion.SAD);
+            }
+        } catch (ItemBrokenException e) {
+            System.out.println("Охота сорвалась: " + e.getMessage());
+            setEmotion(Emotion.SAD);
+        }
     }
 
     @Override

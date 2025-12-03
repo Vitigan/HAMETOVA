@@ -1,6 +1,7 @@
 package entities;
 
 import enums.Emotion;
+import enums.Size;
 import java.util.Objects;
 
 public abstract class LivingBeing {
@@ -8,10 +9,12 @@ public abstract class LivingBeing {
     protected int age;
     protected Emotion emotion;
     protected boolean isAlive;
+    protected Size size;
 
-    public LivingBeing(String name, int age) {
+    public LivingBeing(String name, int age, Size size) {
         this.name = name;
         this.age = age;
+        this.size = size;
         this.emotion = Emotion.SAD;
         this.isAlive = true;
     }
@@ -39,6 +42,10 @@ public abstract class LivingBeing {
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public Size getSize() {
+        return size;
     }
 
     @Override

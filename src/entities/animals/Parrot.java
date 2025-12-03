@@ -11,7 +11,7 @@ public class Parrot extends LivingBeing implements Soundable, LivingInteractable
     private boolean isTame;
 
     public Parrot(String name, int age, boolean isTame) {
-        super(name, age);
+        super(name, age, enums.Size.SMALL);
         this.isTame = isTame;
         this.setEmotion(isTame ? Emotion.HAPPY : Emotion.CALM);
     }

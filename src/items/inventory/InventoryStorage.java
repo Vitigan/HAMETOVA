@@ -1,24 +1,42 @@
 package items.inventory;
 
+import items.Item;
+import enums.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class InventoryStorage {
     private final double capacity;
+    private final Size maxItemSize; // Максимальный размер предмета, который влезает
     private final List<InventoryItem> items;
 
     public InventoryStorage(double capacity) {
+        this(capacity, Size.MEDIUM); // По умолчанию вмещает средние предметы
+    }
+
+    public InventoryStorage(double capacity, Size maxItemSize) {
         this.capacity = capacity;
+        this.maxItemSize = maxItemSize;
         this.items = new ArrayList<>();
     }
 
     public boolean addItem(InventoryItem item) {
+        if (!item.size().canFitIn(maxItemSize)) {
+            System.out.println("Предмет " + item.name() + " (" + item.size() + ") слишком большой для этого хранилища ("
+                    + maxItemSize + ")!");
+            return false;
+        }
         if (getCurrentWeight() + item.getTotalWeight() <= capacity) {
             items.add(item);
             return true;
         }
         return false;
+    }
+
+    public boolean addItem(Item item) {
+        InventoryItem invItem = new InventoryItem(item.getName(), 1, item.getWeight(), item.getSize(), item);
+        return addItem(invItem);
     }
 
     public double getCurrentWeight() {
@@ -86,7 +104,8 @@ public class InventoryStorage {
                         // Заменяем на предмет с меньшим количеством
                         int remaining = item.quantity() - quantity;
                         items.set(i, item.withQuantity(remaining));
-                        return new InventoryItem(item.name(), quantity, item.weightPerUnit());
+                        return new InventoryItem(item.name(), quantity, item.weightPerUnit(), item.size(),
+                                item.itemReference());
                     }
                 }
             }

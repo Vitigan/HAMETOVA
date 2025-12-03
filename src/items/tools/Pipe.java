@@ -10,7 +10,7 @@ public class Pipe extends Item {
     private boolean isSmokable;
 
     public Pipe(Material material) {
-        super("Трубка");
+        super("Трубка", 0.2, enums.Size.SMALL); // Трубка мелкая
         this.material = material;
         this.quality = (int) (Math.random() * 10) + 1; // 1-10
         this.isSmokable = quality >= 5;
