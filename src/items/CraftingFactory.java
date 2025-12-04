@@ -10,12 +10,12 @@ import items.containers.Basket;
 import items.containers.Backpack;
 import enums.Material;
 import enums.WeaponType;
-import items.inventory.InventoryStorage;
+import items.inventory.Inventory;
 import items.inventory.InventoryItem;
 
 public class CraftingFactory {
 
-    public static Boat createBoat(InventoryStorage storage, String name) {
+    public static Boat createBoat(Inventory storage, String name) {
         checkAndConsume(storage, "Дерево", 5);
         checkAndConsume(storage, "Гвозди", 2);
         Boat boat = new Boat(name);
@@ -23,7 +23,7 @@ public class CraftingFactory {
         return boat;
     }
 
-    public static Weapon createWeapon(InventoryStorage storage, WeaponType type) {
+    public static Weapon createWeapon(Inventory storage, WeaponType type) {
         if (type == WeaponType.BOW) {
             checkAndConsume(storage, "Дерево", 2);
             checkAndConsume(storage, "Веревка", 1);
@@ -42,7 +42,7 @@ public class CraftingFactory {
         return weapon;
     }
 
-    public static Pipe createPipe(InventoryStorage storage, Material material) {
+    public static Pipe createPipe(Inventory storage, Material material) {
         checkAndConsume(storage, "Глина", 1);
         Pipe pipe = new Pipe(material);
         System.out.println("Создана трубка из " + material + " (качество: " + pipe.getQuality() + ")");
@@ -54,27 +54,27 @@ public class CraftingFactory {
         return pipe;
     }
 
-    public static Snare createSnare(InventoryStorage storage, String material) {
+    public static Snare createSnare(Inventory storage, String material) {
         checkAndConsume(storage, "Веревка", 2);
         Snare snare = new Snare(material);
         System.out.println("Созданы силки из " + material + "!");
         return snare;
     }
 
-    public static Pit createPit(InventoryStorage storage) {
+    public static Pit createPit(Inventory storage) {
         Pit pit = new Pit();
         System.out.println("Выкопана волчья яма!");
         return pit;
     }
 
-    public static Basket createBasket(InventoryStorage storage, int maxWeight, String style) {
+    public static Basket createBasket(Inventory storage, int maxWeight, String style) {
         checkAndConsume(storage, "Прутья", 5);
         Basket basket = new Basket(maxWeight, style);
         System.out.println("Сплетена " + style + " корзина!");
         return basket;
     }
 
-    public static Backpack createBackpack(InventoryStorage storage, int capacity, String material) {
+    public static Backpack createBackpack(Inventory storage, int capacity, String material) {
         checkAndConsume(storage, "Кожа", 3);
         checkAndConsume(storage, "Нитки", 2);
         Backpack backpack = new Backpack(capacity, material);
@@ -82,7 +82,7 @@ public class CraftingFactory {
         return backpack;
     }
 
-    private static void checkAndConsume(InventoryStorage storage, String resourceName, int amount) {
+    private static void checkAndConsume(Inventory storage, String resourceName, int amount) {
         InventoryItem item = storage.takeItem(resourceName, amount);
         if (item == null) {
             throw new IllegalStateException("Недостаточно ресурсов: " + resourceName + " (нужно " + amount + ")");

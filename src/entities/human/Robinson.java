@@ -9,14 +9,13 @@ import entities.LivingInteractable;
 import entities.Talkable;
 import items.Item;
 import exceptions.InteractionException;
-import items.inventory.HoldsItems;
-import items.inventory.InventoryStorage;
+import items.inventory.Inventory;
 import entities.HuntTarget;
 import items.tools.Weapon;
 import exceptions.ItemBrokenException;
 
-public class Robinson extends LivingBeing implements LivingInteractable, Talkable, HoldsItems {
-    private final InventoryStorage inventory;
+public class Robinson extends LivingBeing implements LivingInteractable, Talkable {
+    private final Inventory inventory;
     private int powderAmount;
 
     private static final double DEFAULT_INVENTORY_SIZE = 30.0;
@@ -24,7 +23,7 @@ public class Robinson extends LivingBeing implements LivingInteractable, Talkabl
 
     public Robinson(String name, int age) {
         super(name, age, enums.Size.MEDIUM); // Робинзон среднего размера
-        this.inventory = new InventoryStorage(DEFAULT_INVENTORY_SIZE);
+        this.inventory = new Inventory(DEFAULT_INVENTORY_SIZE);
         this.powderAmount = INITIAL_POWDER;
         this.setEmotion(Emotion.CALM);
     }
@@ -113,8 +112,7 @@ public class Robinson extends LivingBeing implements LivingInteractable, Talkabl
         return "Человек по имени " + name;
     }
 
-    @Override
-    public InventoryStorage getStorage() {
+    public Inventory getStorage() {
         return inventory;
     }
 

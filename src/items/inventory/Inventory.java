@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class InventoryStorage {
+public class Inventory {
     private final double capacity;
     private final Size maxItemSize; // Максимальный размер предмета, который влезает
     private final List<InventoryItem> items;
 
-    public InventoryStorage(double capacity) {
+    public Inventory(double capacity) {
         this(capacity, Size.MEDIUM); // По умолчанию вмещает средние предметы
     }
 
-    public InventoryStorage(double capacity, Size maxItemSize) {
+    public Inventory(double capacity, Size maxItemSize) {
         this.capacity = capacity;
         this.maxItemSize = maxItemSize;
         this.items = new ArrayList<>();
@@ -66,7 +66,7 @@ public class InventoryStorage {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof InventoryStorage that))
+        if (!(o instanceof Inventory that))
             return false;
         return Double.compare(that.capacity, capacity) == 0 &&
                 items.equals(that.items);
@@ -79,7 +79,7 @@ public class InventoryStorage {
 
     @Override
     public String toString() {
-        return "InventoryStorage{capacity=" + capacity + ", items=" + items + "}";
+        return "Inventory{capacity=" + capacity + ", items=" + items + "}";
     }
 
     public boolean isEmpty() {
@@ -94,7 +94,7 @@ public class InventoryStorage {
     public InventoryItem takeItem(String name, int quantity) {
         for (int i = 0; i < items.size(); i++) {
             InventoryItem item = items.get(i);
-            if (item.name().equalsIgnoreCase(name)) {
+            if (item.name().equals(name)) {
                 if (item.quantity() >= quantity) {
                     // Уменьшаем количество или удаляем
                     if (item.quantity() == quantity) {

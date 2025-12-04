@@ -95,7 +95,7 @@ public class Main {
         Basket storageBasket = CraftingFactory.createBasket(robinson.getStorage(), 15, "большая глубокая");
 
         System.out.println("\nРобинзон наполняет корзину:");
-        storageBasket.put(new InventoryItem("Глина", 4, 1.0));
+        storageBasket.store(new InventoryItem("Глина", 4, 1.0));
         storageBasket.carry();
 
         // Используем Фабрику для создания рюкзака
@@ -112,6 +112,35 @@ public class Main {
         }
 
         backpack.wear();
+        System.out.println();
+
+        // СЦЕНА 3.5: Демонстрация контейнеров
+        System.out.println("СЦЕНА 3.5: Работа с контейнерами");
+
+        Weapon spear = new Weapon(WeaponType.GUN);
+        System.out.println("\n--- Робинзон кладет в рюкзак: трубку, копье, камни ---");
+        backpack.store(clayPipe);
+        backpack.store(spear);
+        backpack.store(new InventoryItem("Камень", 3, 0.5));
+
+        System.out.println("\n--- Робинзон кладет в корзину: фрукты и орехи ---");
+        storageBasket.store(new InventoryItem("Фрукты", 10, 0.2));
+        storageBasket.store(new InventoryItem("Орехи", 15, 0.1));
+
+        System.out.println("\nСодержимое: Рюкзак = " + backpack.getContents());
+        System.out.println("Содержимое: Корзина = " + storageBasket.getContents());
+
+        System.out.println("\n--- Попытка положить лодку в корзину (не влезет!) ---");
+        storageBasket.store(rescueBoat);
+
+        System.out.println("\n--- Робинзон достает камень ---");
+        backpack.take("Камень");
+
+        System.out.println("\n--- Перекладываем из корзины в рюкзак ---");
+        storageBasket.transferAllTo(backpack.getStorage());
+        System.out.println(
+                "Корзина после: " + (storageBasket.getContents().isEmpty() ? "пусто" : storageBasket.getContents()));
+        System.out.println("Рюкзак после: " + backpack.getContents());
         System.out.println();
 
         // СЦЕНА 4: Охота
