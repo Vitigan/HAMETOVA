@@ -21,10 +21,11 @@ public class Main {
         Robinson robinson = new Robinson("Робинзон", 45);
         Parrot popka = new Parrot("Попка", 3, true);
 
-        Goat oldGoat = new Goat("Старый козел", 6, GoatAge.OLD);
-        Goat domesticGoat = new Goat("Домашняя коза", 4, GoatAge.ADULT);
-        Goat kid1 = new Goat("Козленок1", 1, GoatAge.YOUNG);
-        Goat kid2 = new Goat("Козленок2", 1, GoatAge.YOUNG);
+        Goat oldGoat = new Goat("Старый козел", 6);
+        Goat domesticGoat = new Goat("Домашняя коза", 4);
+        Goat kid1 = new Goat("Козленок1", 1);
+        Goat kid2 = new Goat("Козленок2", 1);
+        entities.animals.Turtle turtle = new entities.animals.Turtle("Черепаха", 100);
 
         System.out.println("=== НАЧАЛО ИСТОРИИ ===\n");
 
@@ -43,6 +44,7 @@ public class Main {
         popka.move();
         popka.flyTo(robinson);
         popka.talk("Бедный Робин Крузо! Как ты сюда пришел? Где ты был?");
+        robinson.interactWithLiving(popka); // Робинзон играет с попугаем
         popka.sitOnFinger();
         robinson.setEmotion(Emotion.HAPPY);
         System.out.println();
@@ -101,7 +103,7 @@ public class Main {
         robinson.getStorage().addItem(new InventoryItem("Нитки", 5, 0.01));
         Backpack backpack = CraftingFactory.createBackpack(robinson.getStorage(), 10, "кожаный");
         System.out.println("Робинзон кладет вещи в рюкзак:");
-        backpack.store("Трубка"); // Кладем как предмет (строку)
+        backpack.store("Трубка");
 
         // Попытка положить лодку в рюкзак (должна быть ошибка размера)
         System.out.println("Попытка положить лодку в рюкзак:");
@@ -150,27 +152,13 @@ public class Main {
         snare.interactWithItem(kid1); // Козленок попадает в силки
         pit.interactWithItem(oldGoat); // Старый козел падает в яму
 
-        // Тест размера ямы
-        System.out.println("\n--- Тест размера ямы ---");
-        // Создаем маленькую яму (хак через рефлексию или просто новый класс, но тут мы
-        // просто создадим новую яму и скажем что она малая, если бы могли)
-        // Но так как мы не можем изменить размер созданной ямы (он final), мы просто
-        // проверим текущую логику.
-        // Яма LARGE, Робинзон MEDIUM. Он упадет.
-        // Давайте попробуем поймать слона (которого нет, но мы можем создать гигантскую
-        // козу)
-        Goat giantGoat = new Goat("Гигантская Коза", 10, GoatAge.OLD);
-        // Хак: изменим размер козы через рефлексию или просто поверим, что если бы она
-        // была GIANT, она бы не упала.
-        // Вместо этого, давайте создадим "Мелкую яму" если бы могли.
+        System.out.println("\nРобинзон проверяет пойманных животных:");
+        robinson.interactWithLiving(kid1); // Осматривает козленка
+        robinson.interactWithLiving(oldGoat); // Осматривает старого козла
 
-        // Ладно, давайте просто проверим, что Робинзон (MEDIUM) падает в Яму (LARGE)
+        // Робинзон проверяет ловушки
         System.out.println("Робинзон (MEDIUM) подходит к Яме (LARGE):");
         pit.interactWithItem(robinson);
-
-        // А теперь представим, что яма маленькая (нужно было бы добавить конструктор с
-        // размером в Pit, но мы не добавили)
-        // Давайте добавим конструктор в Pit с размером, чтобы протестировать это.
 
         // Робинзон проверяет ловушки
         System.out.println("\nРобинзон обходит ловушки:");
@@ -187,6 +175,12 @@ public class Main {
         snare.interactWithItem(robinson);
         pit.interactWithItem(robinson);
 
+        System.out.println();
+
+        // СЦЕНА 5.5: Встреча с черепахой
+        System.out.println("СЦЕНА 5.5: Встреча с черепахой");
+        robinson.interactWithLiving(turtle); // Робинзон пытается поймать
+        robinson.interactWithLiving(turtle); // Повторная попытка (или проверка яиц)
         System.out.println();
 
         // СЦЕНА 6: Итоги

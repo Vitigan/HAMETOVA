@@ -40,6 +40,23 @@ public abstract class LivingBeing {
         this.emotion = emotion;
     }
 
+    public String getEmotionEffect() {
+        switch (emotion) {
+            case HAPPY:
+                return " (радостно)";
+            case SAD:
+                return " (грустно)";
+            case SCARED:
+                return " (испуганно)";
+            case EXCITED:
+                return " (возбужденно)";
+            case CALM:
+                return " (спокойно)";
+            default:
+                return "";
+        }
+    }
+
     public boolean isAlive() {
         return isAlive;
     }

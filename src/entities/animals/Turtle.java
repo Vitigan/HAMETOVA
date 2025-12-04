@@ -5,6 +5,7 @@ import entities.human.Robinson;
 import enums.Emotion;
 import entities.Soundable;
 import entities.LivingInteractable;
+import enums.Size;
 import java.util.Objects;
 
 public class Turtle extends LivingBeing implements Soundable, LivingInteractable {
@@ -12,7 +13,7 @@ public class Turtle extends LivingBeing implements Soundable, LivingInteractable
     private boolean isCaught;
 
     public Turtle(String name, int age) {
-        super(name, age);
+        super(name, age, Size.SMALL);
         this.eggCount = (int) (Math.random() * 3) + 1;
         this.isCaught = false;
         this.setEmotion(Emotion.CALM);
@@ -28,22 +29,7 @@ public class Turtle extends LivingBeing implements Soundable, LivingInteractable
 
     @Override
     public void makeSound() {
-        String sound = "";
-        switch (getEmotion()) {
-            case SCARED:
-                sound = "испуганно шипит";
-                break;
-            case HAPPY:
-                sound = "тихо урчит";
-                break;
-            case SAD:
-                sound = "издает грустный свист";
-                break;
-            default:
-                sound = "медленно дышит";
-                break;
-        }
-        System.out.println(name + " " + sound);
+        System.out.println(name + " шипит" + getEmotionEffect());
     }
 
     @Override
@@ -52,26 +38,15 @@ public class Turtle extends LivingBeing implements Soundable, LivingInteractable
             Robinson robinson = (Robinson) interactor;
 
             if (isCaught) {
-                System.out.println(name + " беспомощно смотрит на " + robinson.getName());
                 this.setEmotion(Emotion.SCARED);
+                System.out.println(name + getEmotionEffect() + " смотрит на " + robinson.getName());
                 makeSound();
-
-                if (eggCount > 0) {
-                    System.out.println(robinson.getName() + " забирает яйца у черепахи");
-                    int collected = collectEggs();
-                    robinson.talk("Собрал " + collected + " яиц черепахи!");
-                }
             } else {
-                System.out.println(name + " пытается уползти от " + robinson.getName());
                 this.setEmotion(Emotion.SCARED);
+                System.out.println(name + getEmotionEffect() + " пытается уползти от " + robinson.getName());
 
                 if (Math.random() < 0.7) {
                     System.out.println(name + " прячется в панцирь!");
-                }
-
-                if (Math.random() < 0.6) {
-                    getCaught();
-                    robinson.talk("Поймал черепаху!");
                 }
             }
         }

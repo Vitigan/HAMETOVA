@@ -29,8 +29,8 @@ public class Backpack extends Item implements ItemInteractable, HoldsItems {
     }
 
     public Backpack(int capacity, String material) {
-        super("Рюкзак", 1.5, enums.Size.MEDIUM); // Рюкзак средний
-        this.storage = new InventoryStorage((double) capacity, enums.Size.MEDIUM); // В рюкзак влезают средние предметы
+        super("Рюкзак", 1.5, enums.Size.MEDIUM);
+        this.storage = new InventoryStorage((double) capacity, enums.Size.MEDIUM);
         this.material = material;
         this.durability = DEFAULT_DURABILITY;
         this.isWorn = false;
@@ -42,18 +42,20 @@ public class Backpack extends Item implements ItemInteractable, HoldsItems {
     }
 
     public boolean store(String item) {
-        // Для совместимости с Main.java, где передается строка
-        // Предполагаем вес 1.0 и количество 1
-        boolean added = storage.addItem(new InventoryItem(item, 1, 1.0));
+        // Создаем предмет с дефолтным весом 1.0 и размером SMALL
+        return storage.addItem(new InventoryItem(item, 1, 1.0));
+    }
+
+    public boolean store(Item item) {
+        boolean added = storage.addItem(item);
         if (added) {
-            System.out.println("В рюкзак положен: " + item);
-            // Рюкзак изнашивается при использовании
+            System.out.println("В рюкзак положен: " + item.getName());
             if (Math.random() < WEAR_CHANCE) {
                 durability -= WEAR_AMOUNT;
                 System.out.println("Рюкзак немного износился. Прочность: " + durability + "%");
             }
         } else {
-            System.out.println("Рюкзак полон! Нельзя положить: " + item);
+            System.out.println("Рюкзак полон или предмет слишком велик! Нельзя положить: " + item.getName());
         }
         return added;
     }
@@ -63,12 +65,31 @@ public class Backpack extends Item implements ItemInteractable, HoldsItems {
             System.out.println("В рюкзаке ничего нет!");
             return null;
         }
-
         // Берем первый попавшийся предмет
         InventoryItem item = storage.getItems().get(0);
-        storage.takeItem(item.name(), item.quantity());
-        System.out.println("Из рюкзака взят: " + item.name());
-        return item.name();
+        return take(item.name());
+    }
+
+    public String take(String name) {
+        InventoryItem item = storage.takeItem(name, 1);
+        if (item != null) {
+            System.out.println("Из рюкзака взят: " + item.name());
+            return item.name();
+        } else {
+            System.out.println("Предмет '" + name + "' не найден в рюкзаке.");
+            return null;
+        }
+    }
+
+    public InventoryItem drop(String name) {
+        InventoryItem item = storage.takeItem(name, 1);
+        if (item != null) {
+            System.out.println("Выброшен из рюкзака: " + item.name());
+            return item;
+        } else {
+            System.out.println("Предмет '" + name + "' не найден, нельзя выбросить.");
+            return null;
+        }
     }
 
     public void wear() {
@@ -97,9 +118,6 @@ public class Backpack extends Item implements ItemInteractable, HoldsItems {
             System.out.println("Рюкзак надет на спину");
         }
 
-        if (interactor instanceof Robinson) {
-            // Можно добавить логику перекладывания вещей, как в Корзине, если нужно
-        }
     }
 
     @Override

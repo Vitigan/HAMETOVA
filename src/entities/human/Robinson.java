@@ -1,6 +1,9 @@
 package entities.human;
 
 import entities.LivingBeing;
+import entities.animals.Goat;
+import entities.animals.Parrot;
+import entities.animals.Turtle;
 import enums.Emotion;
 import entities.LivingInteractable;
 import entities.Talkable;
@@ -33,28 +36,7 @@ public class Robinson extends LivingBeing implements LivingInteractable, Talkabl
 
     @Override
     public void makeSound() {
-        String sound = "";
-        switch (getEmotion()) {
-            case HAPPY:
-                sound = "напевает веселую мелодию";
-                break;
-            case SAD:
-                sound = "тяжело вздыхает";
-                break;
-            case SCARED:
-                sound = "дрожащим голосом шепчет молитву";
-                break;
-            case EXCITED:
-                sound = "восклицает от удивления";
-                break;
-            case CALM:
-                sound = "спокойно насвистывает";
-                break;
-            default:
-                sound = "молчит";
-                break;
-        }
-        System.out.println(name + " " + sound);
+        System.out.println(name + " говорит" + getEmotionEffect());
     }
 
     @Override
@@ -68,8 +50,62 @@ public class Robinson extends LivingBeing implements LivingInteractable, Talkabl
     }
 
     @Override
-    public void interactWithLiving(LivingBeing interactor) {
-        System.out.println(name + " взаимодействует с " + interactor.getName());
+    public void interactWithLiving(LivingBeing target) {
+        System.out.println(name + " подходит к " + target.getName());
+
+        if (target instanceof Turtle) {
+            Turtle turtle = (Turtle) target;
+            if (turtle.isCaught()) {
+                if (turtle.getEggCount() > 0) {
+                    System.out.println(name + " проверяет черепаху на наличие яиц.");
+                    int eggs = turtle.collectEggs();
+                    talk("Ого! Нашел " + eggs + " яиц!");
+                    this.setEmotion(Emotion.HAPPY);
+                } else {
+                    System.out.println(name + " видит, что у черепахи нет яиц.");
+                }
+            } else {
+                System.out.println(name + " пытается поймать черепаху.");
+                if (Math.random() < 0.6) {
+                    turtle.getCaught();
+                    talk("Попалась, красавица!");
+                    this.setEmotion(Emotion.HAPPY);
+                } else {
+                    System.out.println("Черепаха оказалась быстрее.");
+                    this.setEmotion(Emotion.SAD);
+                }
+            }
+            // Вызываем реакцию черепахи на взаимодействие
+            turtle.interactWithLiving(this);
+        } else if (target instanceof Goat) {
+            Goat goat = (Goat) target;
+            if (goat.isTamed()) {
+                System.out.println(name + " ласково гладит козу.");
+                this.setEmotion(Emotion.HAPPY);
+            } else if (goat.isTrapped()) {
+                System.out.println(name + " осматривает пойманную козу.");
+                this.setEmotion(Emotion.CALM);
+            } else {
+                System.out.println(name + " пытается подозвать козу.");
+                talk("Коза-коза, иди сюда!");
+            }
+            goat.interactWithLiving(this);
+        } else if (target instanceof Parrot) {
+            Parrot parrot = (Parrot) target;
+            if (parrot.isTame()) {
+                System.out.println(name + " играет с попугаем.");
+                this.setEmotion(Emotion.HAPPY);
+            } else {
+                System.out.println(name + " пытается приманить попугая.");
+                talk("Попка-дурак, хочешь сухарик?");
+            }
+            parrot.interactWithLiving(this);
+        } else {
+            System.out.println(name + " взаимодействует с " + target.getName());
+            if (target instanceof LivingInteractable) {
+                ((LivingInteractable) target).interactWithLiving(this);
+            }
+        }
     }
 
     @Override

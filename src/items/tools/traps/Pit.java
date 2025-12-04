@@ -15,7 +15,7 @@ public class Pit extends Item implements ItemInteractable {
     private double catchChance;
 
     public Pit() {
-        super("Волчья яма", 0.0, enums.Size.LARGE); // Яма крупная
+        super("Волчья яма", 0.0, enums.Size.LARGE);
         this.isSet = false;
         this.isCovered = false;
         this.capturedAnimal = null;

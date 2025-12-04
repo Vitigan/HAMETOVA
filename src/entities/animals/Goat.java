@@ -12,15 +12,25 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
     private final GoatAge ageType;
     private boolean isTrapped;
     private boolean isTamed; // приручен
-    private boolean isDead;
 
-    public Goat(String name, int age, GoatAge ageType) {
-        super(name, age, ageType == GoatAge.YOUNG ? enums.Size.SMALL : enums.Size.MEDIUM);
-        this.ageType = ageType;
+    public Goat(String name, int age) {
+        super(name, age, determineSize(age));
+        this.ageType = determineAgeType(age);
         this.isTrapped = false;
         this.isTamed = false;
-        this.isDead = false;
         this.setEmotion(Emotion.CALM);
+    }
+
+    private static GoatAge determineAgeType(int age) {
+        if (age <= 1)
+            return GoatAge.YOUNG;
+        if (age <= 7)
+            return GoatAge.ADULT;
+        return GoatAge.OLD;
+    }
+
+    private static enums.Size determineSize(int age) {
+        return age <= 1 ? enums.Size.SMALL : enums.Size.MEDIUM;
     }
 
     @Override
@@ -33,42 +43,7 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
 
     @Override
     public void makeSound() {
-        String sound = "";
-        switch (ageType) {
-            case YOUNG:
-                sound = "тонко кричит: 'Мееее!'";
-                break;
-            case ADULT:
-                sound = "громко говорит: 'Бееее!'";
-                break;
-            case OLD:
-                sound = "хрипло мычит: 'Ммууу!'";
-                break;
-        }
-
-        String emotionEffect = "";
-        switch (getEmotion()) {
-            case HAPPY:
-                emotionEffect = " (радостно)";
-                break;
-            case SAD:
-                emotionEffect = " (грустно)";
-                break;
-            case SCARED:
-                emotionEffect = " (испуганно)";
-                break;
-            case EXCITED:
-                emotionEffect = " (возбужденно)";
-                break;
-            case CALM:
-                emotionEffect = " (спокойно)";
-                break;
-            default:
-                emotionEffect = "";
-                break;
-        }
-
-        System.out.println(name + " " + sound + emotionEffect);
+        System.out.println(name + " мекает" + getEmotionEffect());
     }
 
     @Override
@@ -76,22 +51,22 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
         if (interactor instanceof Robinson) {
             Robinson robinson = (Robinson) interactor;
             if (isTrapped) {
-                System.out.println(name + " беспомощно смотрит на " + robinson.getName());
                 this.setEmotion(Emotion.SCARED);
+                System.out.println(name + getEmotionEffect() + " смотрит на " + robinson.getName());
             } else if (isTamed) {
-                System.out.println(name + " радостно бежит к " + robinson.getName());
                 this.setEmotion(Emotion.HAPPY);
+                System.out.println(name + getEmotionEffect() + " бежит к " + robinson.getName());
                 makeSound();
             } else {
-                System.out.println(name + " убегает от " + robinson.getName());
                 this.setEmotion(Emotion.SCARED);
+                System.out.println(name + getEmotionEffect() + " убегает от " + robinson.getName());
             }
         }
     }
 
     @Override
     public boolean beHunted() {
-        if (isDead) {
+        if (!isAlive()) {
             System.out.println(name + " уже мертва!");
             return false;
         }
@@ -115,7 +90,7 @@ public class Goat extends LivingBeing implements Soundable, LivingInteractable, 
         }
 
         if (Math.random() < catchChance) {
-            isDead = true;
+            isAlive = false;
             System.out.println("Успешно поймали (и убили) " + name + "!");
             return true;
         } else {

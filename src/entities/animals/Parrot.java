@@ -23,28 +23,7 @@ public class Parrot extends LivingBeing implements Soundable, LivingInteractable
 
     @Override
     public void makeSound() {
-        String sound = "";
-        switch (getEmotion()) {
-            case HAPPY:
-                sound = "весело щебечет и насвистывает";
-                break;
-            case SAD:
-                sound = "тихо бормочет";
-                break;
-            case SCARED:
-                sound = "пронзительно кричит";
-                break;
-            case EXCITED:
-                sound = "громко кричит и хлопает крыльями";
-                break;
-            case CALM:
-                sound = "негромко щебечет";
-                break;
-            default:
-                sound = "молчит";
-                break;
-        }
-        System.out.println(name + " " + sound);
+        System.out.println(name + " щебечет" + getEmotionEffect());
     }
 
     @Override
@@ -52,10 +31,8 @@ public class Parrot extends LivingBeing implements Soundable, LivingInteractable
         if (interactor instanceof Robinson) {
             Robinson robinson = (Robinson) interactor;
             if (isTame) {
-                System.out.printf("%s радостно садится %s на плечо%n", name, robinson.getName());
-
-                // ДВУСТОРОННЕЕ ВЗАИМОДЕЙСТВИЕ:
-                robinson.interactWithLiving(this); // ← Робинзон реагирует на попугая!
+                this.setEmotion(Emotion.HAPPY);
+                System.out.println(name + getEmotionEffect() + " садится " + robinson.getName() + " на плечо");
             }
         }
     }

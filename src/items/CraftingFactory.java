@@ -62,7 +62,6 @@ public class CraftingFactory {
     }
 
     public static Pit createPit(InventoryStorage storage) {
-        // Яма не требует ресурсов, только сил
         Pit pit = new Pit();
         System.out.println("Выкопана волчья яма!");
         return pit;
