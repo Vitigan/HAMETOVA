@@ -16,7 +16,6 @@ public class Basket extends Container {
         this.style = style;
     }
 
-    // Constructor for Main.java compatibility
     public Basket(int maxWeight, String style) {
         this(style, (double) maxWeight);
     }

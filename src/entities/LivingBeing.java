@@ -23,7 +23,6 @@ public abstract class LivingBeing {
 
     public abstract void makeSound();
 
-    // Getters and setters
     public String getName() {
         return name;
     }

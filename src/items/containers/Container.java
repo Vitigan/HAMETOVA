@@ -31,7 +31,6 @@ public abstract class Container extends Item implements ItemInteractable {
         return added;
     }
 
-    // Compatibility method for strings
     public boolean store(String itemName) {
         return storage.addItem(new InventoryItem(itemName, 1, 1.0));
     }
@@ -99,10 +98,13 @@ public abstract class Container extends Item implements ItemInteractable {
     }
 
     public void transferAllTo(Inventory target) {
-        // Создаем копию списка, чтобы избежать ConcurrentModificationException
+        /*
+         * Создаем копию списка, чтобы избежать ConcurrentModificationException
+         * Java не позволяет изменять коллекцию во время итерации по ней
+         */
         List<InventoryItem> itemsToTransfer = new ArrayList<>(storage.getItems());
 
-        for (InventoryItem item : itemsToTransfer) {
+        for (InventoryItem item : itemsToTransfer) { // для каждого предмета в списке itemsToTransfer
             if (target.addItem(item)) {
                 storage.takeItem(item.name(), item.quantity());
             } else {
