@@ -54,8 +54,8 @@ public class Main {
 
         // Сбор ресурсов для лодки
         System.out.println("Робинзон собирает материалы для лодки...");
-        robinson.getStorage().addItem(new InventoryItem("Дерево", 10, 0.5));
-        robinson.getStorage().addItem(new InventoryItem("Гвозди", 5, 0.05));
+        robinson.getStorage().addItem(new InventoryItem("Дерево", 10, 0.3));
+        robinson.getStorage().addItem(new InventoryItem("Гвозди", 10, 0.05));
 
         // Используем Фабрику для создания лодки
         Boat rescueBoat = CraftingFactory.createBoat(robinson.getStorage(), "Спасательная шлюпка");
@@ -77,7 +77,7 @@ public class Main {
         System.out.println("СЦЕНА 3: Ремесленная деятельность");
 
         // Сбор глины
-        robinson.getStorage().addItem(new InventoryItem("Глина", 5, 0.5));
+        robinson.getStorage().addItem(new InventoryItem("Глина", 5, 0.2));
 
         // Используем Фабрику для создания трубки
         Pipe clayPipe = CraftingFactory.createPipe(robinson.getStorage(), Material.CLAY);
@@ -91,7 +91,7 @@ public class Main {
         }
 
         // Используем Фабрику для создания корзины
-        robinson.getStorage().addItem(new InventoryItem("Прутья", 10, 0.2));
+        robinson.getStorage().addItem(new InventoryItem("Прутья", 10, 0.1));
         Basket storageBasket = CraftingFactory.createBasket(robinson.getStorage(), 15, "большая глубокая");
 
         System.out.println("\nРобинзон наполняет корзину:");
@@ -99,7 +99,7 @@ public class Main {
         storageBasket.carry();
 
         // Используем Фабрику для создания рюкзака
-        robinson.getStorage().addItem(new InventoryItem("Кожа", 5, 1.0));
+        robinson.getStorage().addItem(new InventoryItem("Кожа", 5, 0.3));
         robinson.getStorage().addItem(new InventoryItem("Нитки", 5, 0.01));
         Backpack backpack = CraftingFactory.createBackpack(robinson.getStorage(), 10, "кожаный");
         System.out.println("Робинзон кладет вещи в рюкзак:");
@@ -147,7 +147,7 @@ public class Main {
         System.out.println("СЦЕНА 4: Охота с луком");
 
         // Ресурсы для лука
-        robinson.getStorage().addItem(new InventoryItem("Дерево", 5, 0.5));
+        robinson.getStorage().addItem(new InventoryItem("Дерево", 5, 0.3));
         robinson.getStorage().addItem(new InventoryItem("Веревка", 2, 0.1));
 
         // Используем Фабрику для создания оружия
